@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ContractGuard - AI-Powered Contract Analysis",
-  description: "Protect yourself from bad contracts. AI-powered analysis that identifies risks, hidden clauses, and unfair terms before you sign. Built for freelancers and small businesses.",
+  title: "FacePrivacy - AI Face Anonymization & Blur Tool",
+  description: "Free AI-powered face blurring tool. Automatically anonymize background faces in photos while keeping your subjects clear. GDPR compliant, instant, no signup required.",
 };
 
 export default function RootLayout({

@@ -1,30 +1,37 @@
-# ContractGuard - AI-Powered Contract Analysis
+# FacePrivacy - AI-Powered Face Anonymization Tool
 
-An AI-powered web application that helps freelancers and small businesses analyze contracts to identify risks, hidden clauses, and unfair terms before signing.
+A free, AI-powered web application that automatically detects and blurs background faces in photos while keeping your main subjects clear. Perfect for GDPR compliance, social media privacy, and protecting strangers' identities.
 
-## Features
+## 🎯 The Problem
 
-- **AI-Powered Analysis**: Uses Claude AI to analyze contracts comprehensively
-- **Risk Detection**: Identifies unfair terms, liability issues, and potential legal problems
-- **Plain English Summaries**: Translates complex legal language into understandable explanations
-- **Negotiation Tips**: Provides specific recommendations for improving contract terms
-- **Multiple Input Methods**: Upload PDF/TXT files or paste contract text directly
-- **Beautiful UI**: Modern, responsive design built with Next.js and Tailwind CSS
+- **GDPR Compliance**: European privacy laws require consent before posting identifiable faces
+- **Social Media Privacy**: Random people in your photos may not want to be on social media
+- **Business Risk**: Companies need to anonymize event photos and marketing materials
 
-## Tech Stack
+## ✨ Features
+
+- **AI Face Detection**: Automatic detection of all faces in photos using HuggingFace models
+- **Smart Blurring**: Intelligently blurs detected faces while maintaining photo quality
+- **Instant Processing**: Get results in 10-30 seconds
+- **Privacy First**: Images processed securely, never stored on servers
+- **Free Forever**: Unlimited processing with small watermark
+- **No Signup Required**: Start using immediately
+
+## 🛠 Tech Stack
 
 - **Framework**: Next.js 15 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **AI**: Anthropic Claude API
+- **AI**: HuggingFace Inference API (facebook/detr-resnet-50 model)
+- **Image Processing**: Jimp (pure JavaScript, no native dependencies)
 - **Deployment**: Vercel (recommended)
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ installed
-- An Anthropic API key ([Get one here](https://console.anthropic.com/))
+- HuggingFace API key ([Get free key here](https://huggingface.co/settings/tokens))
 
 ### Installation
 
@@ -44,9 +51,9 @@ npm install
 cp .env.example .env.local
 ```
 
-4. Add your Anthropic API key to `.env.local`:
+4. Add your HuggingFace API key to `.env.local`:
 ```env
-ANTHROPIC_API_KEY=your_actual_api_key_here
+HUGGINGFACE_API_KEY=your_actual_api_key_here
 ```
 
 5. Run the development server:
@@ -56,15 +63,15 @@ npm run dev
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Project Structure
+## 📁 Project Structure
 
 ```
-deneme/
+faceprivacy/
 ├── app/
-│   ├── analyze/          # Contract analysis page
+│   ├── editor/           # Photo editor page
 │   │   └── page.tsx
 │   ├── api/
-│   │   └── analyze/      # API endpoint for AI analysis
+│   │   └── process/      # API endpoint for face detection & blurring
 │   │       └── route.ts
 │   ├── globals.css       # Global styles
 │   ├── layout.tsx        # Root layout
@@ -74,129 +81,127 @@ deneme/
 └── package.json
 ```
 
-## How It Works
+## 🎨 How It Works
 
-1. **Upload**: User uploads a contract (PDF/TXT) or pastes text
-2. **Analysis**: The contract is sent to Claude API for comprehensive analysis
-3. **Results**: AI identifies:
-   - Risk score (0-100)
-   - Specific issues with severity levels
-   - Detailed recommendations
-   - Plain English summary
+1. **Upload**: User uploads or drags a photo into the editor
+2. **Detection**: Image sent to HuggingFace API for face detection using DETR model
+3. **Processing**: Detected face regions are blurred using Jimp
+4. **Watermark**: Small "FacePrivacy.ai" watermark added to free version
+5. **Download**: User downloads the privacy-protected image
 
-## Monetization Strategy
+## 💰 Monetization Strategy
 
-### Pricing Tiers
+### Current (MVP):
+- **Free**: Unlimited photos with watermark
 
-1. **Free Trial**: 1 contract analysis
-2. **Pay Per Contract**: $29 per analysis
-3. **Unlimited Plan**: $99/month for unlimited analyses
+### Planned:
+- **Premium ($19/month)**:
+  - No watermark
+  - Batch processing (multiple photos at once)
+  - Higher resolution output
+  - API access
+  - Priority processing
 
-### Next Steps for Monetization
+## 🔧 API Endpoints
 
-- [ ] Integrate Stripe for payments
-- [ ] Add user authentication (Clerk)
-- [ ] Set up PostgreSQL database
-- [ ] Implement usage tracking
-- [ ] Add PDF export functionality
-- [ ] Create user dashboard
+### POST /api/process
 
-## Deployment
-
-### Deploy to Vercel
-
-1. Push your code to GitHub
-2. Import your repository on [Vercel](https://vercel.com)
-3. Add your `ANTHROPIC_API_KEY` in Environment Variables
-4. Deploy!
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/contractguard)
-
-## Environment Variables
-
-Required:
-- `ANTHROPIC_API_KEY`: Your Anthropic API key
-
-Optional (for future features):
-- `DATABASE_URL`: PostgreSQL connection string
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Clerk authentication
-- `CLERK_SECRET_KEY`: Clerk authentication
-- `STRIPE_SECRET_KEY`: Stripe payments
-- `STRIPE_WEBHOOK_SECRET`: Stripe webhooks
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Stripe client-side
-
-## API Usage
-
-### POST /api/analyze
-
-Analyzes a contract and returns risk assessment.
+Processes an image and returns version with blurred faces.
 
 **Request:**
 ```typescript
 FormData {
-  file?: File,  // PDF or TXT file
-  text?: string // Raw contract text
+  image: File  // JPG, PNG, or HEIC image
 }
 ```
 
 **Response:**
 ```typescript
 {
-  riskScore: number,        // 0-100
-  findings: [
-    {
-      title: string,
-      description: string,
-      severity: "high" | "medium" | "low",
-      recommendation: string
-    }
-  ],
-  summary: string
+  processedImage: string,      // Base64-encoded image
+  facesDetected: number         // Number of faces found
 }
 ```
 
-## Customization
+## 🎯 Why Users Will Pay (vs. Using ChatGPT)
 
-### Changing the AI Model
+Unlike asking ChatGPT to explain privacy:
 
-Edit `app/api/analyze/route.ts`:
-```typescript
-const message = await anthropic.messages.create({
-  model: "claude-3-5-sonnet-20241022", // Change this
-  // ...
-});
-```
+1. **One-Click Solution**: No prompting, no explaining what you want
+2. **Actual Processing**: Really blurs faces, not just advice
+3. **Batch Processing**: Process 100 event photos at once (Premium)
+4. **Professional Output**: Downloadable, watermark-free images
+5. **GDPR Compliance**: Official reports for business use
+6. **Non-Technical Users**: Many people don't know how to use AI tools
 
-### Modifying Analysis Criteria
+## 🚀 Deployment
 
-The analysis prompt can be customized in `app/api/analyze/route.ts` to focus on specific contract types or industries.
+### Deploy to Vercel
 
-## Future Enhancements
+1. Push your code to GitHub
+2. Import your repository on [Vercel](https://vercel.com)
+3. Add your `HUGGINGFACE_API_KEY` in Environment Variables
+4. Deploy!
 
-- [ ] PDF parsing support (currently text only)
-- [ ] Multi-language support
-- [ ] Contract templates library
-- [ ] Comparison with industry standards
-- [ ] Email notifications
-- [ ] Team collaboration features
-- [ ] API for developers
-- [ ] Mobile app
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
 
-## Cost Estimation
+## 🔑 Environment Variables
 
-**AI API Costs** (Anthropic Claude):
-- Average contract: 3,000-5,000 tokens
-- Cost per analysis: ~$0.03-0.05
-- Profit margin at $29/analysis: ~98%
+Required:
+- `HUGGINGFACE_API_KEY`: Your HuggingFace API token
 
-## Security Notes
+Optional (for future features):
+- `DATABASE_URL`: PostgreSQL for user accounts and history
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: User authentication
+- `CLERK_SECRET_KEY`: User authentication
+- `STRIPE_SECRET_KEY`: Payment processing
+- `STRIPE_WEBHOOK_SECRET`: Payment webhooks
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Stripe client-side
 
-- Contracts are NOT stored by default
+## 📊 Cost Estimation
+
+**HuggingFace API Costs**:
+- Face detection: ~$0.02-0.05 per image
+- Free tier: 30,000 requests/month
+- With freemium model: Most users stay free, power users pay $19/month
+- Estimated margin on Premium: ~95% (AI costs minimal)
+
+## 🔒 Security & Privacy
+
+- Images processed in real-time, never stored
 - All data transmitted over HTTPS
 - API keys stored securely in environment variables
-- Consider adding rate limiting for production
+- GDPR compliant by design
+- No user tracking on free tier
 
-## Contributing
+## 🎯 Future Enhancements
+
+- [ ] Smart detection of "main subjects" vs. "background people"
+- [ ] Adjust blur intensity (light, medium, heavy)
+- [ ] Replace faces with emoji/pixel art instead of blur
+- [ ] Batch processing (upload 50 photos, process all)
+- [ ] Browser extension for Instagram/Facebook
+- [ ] Mobile app (iOS/Android)
+- [ ] Video support (blur faces in videos)
+- [ ] API for developers
+- [ ] Custom branding for businesses
+
+## 🐛 Known Limitations (MVP)
+
+- Currently blurs ALL detected faces (not just background)
+- Processing can take 15-30 seconds for large images
+- Requires HuggingFace API (not fully client-side)
+- Watermark is text-based (can be cropped out)
+
+## 📈 Growth Strategy
+
+1. **SEO**: Target "GDPR photo compliance", "blur faces in photo"
+2. **Reddit/ProductHunt**: Launch on r/privacy, r/gdpr, ProductHunt
+3. **Content Marketing**: Blog posts about privacy laws, GDPR fines
+4. **Partnerships**: Reach out to event photographers, marketing agencies
+5. **Freemium Conversion**: Add premium features users actually want
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -204,28 +209,31 @@ The analysis prompt can be customized in `app/api/analyze/route.ts` to focus on 
 4. Push to the branch
 5. Open a Pull Request
 
-## License
+## 📄 License
 
 MIT License - feel free to use this for your own projects!
 
-## Support
+## 💬 Support
 
 For issues or questions:
 - Open an issue on GitHub
 - Email: [your-email]
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - Built with [Next.js](https://nextjs.org/)
-- AI powered by [Anthropic Claude](https://anthropic.com/)
-- UI components with [Tailwind CSS](https://tailwindcss.com/)
+- AI powered by [HuggingFace](https://huggingface.co/)
+- Image processing with [Jimp](https://github.com/jimp-dev/jimp)
+- UI with [Tailwind CSS](https://tailwindcss.com/)
 
 ---
 
-**Note**: This is a starting point. To make this production-ready and profitable, you'll need to:
-1. Add authentication
-2. Integrate payment processing
-3. Set up a database
-4. Implement proper error handling and logging
-5. Add analytics and monitoring
-6. Consider legal compliance (terms of service, privacy policy)
+**Note**: This is an MVP. To make it production-ready:
+1. Add smarter logic to detect main subjects vs. background
+2. Implement authentication for premium features
+3. Add Stripe for payments
+4. Set up database for usage tracking
+5. Improve watermarking (harder to remove)
+6. Add rate limiting and abuse prevention
+7. Consider legal compliance (terms of service, privacy policy)
+8. Add analytics and monitoring
