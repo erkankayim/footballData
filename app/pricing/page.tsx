@@ -155,6 +155,13 @@ export default function PricingPage() {
                 </li>
                 <li className="flex items-start">
                   <span className="text-purple-400 mr-2 text-lg">✓</span>
+                  <div className="text-slate-300">
+                    <span className="font-semibold text-white">Video processing</span>
+                    <span className="block text-xs text-slate-400 mt-0.5">Coming 2026 - Blur faces in videos</span>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-400 mr-2 text-lg">✓</span>
                   <span className="text-slate-300">Batch processing (100+ at once)</span>
                 </li>
                 <li className="flex items-start">
@@ -204,11 +211,47 @@ export default function PricingPage() {
                 Pro Edition: Where Magic Happens ✨
               </h2>
               <p className="text-xl text-purple-200 max-w-3xl mx-auto">
-                Built for photographers, agencies, and businesses that need serious privacy tools
+                Built for YouTubers, photographers, agencies, and businesses that need serious privacy tools
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
+              {/* Video Processing - Featured */}
+              <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 backdrop-blur-sm rounded-xl p-6 border-2 border-yellow-400/50 md:col-span-2">
+                <div className="flex items-start gap-4">
+                  <div className="text-5xl">🎥</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-2xl font-bold">Video Face Blurring</h3>
+                      <span className="bg-yellow-400 text-slate-900 text-xs font-bold px-2 py-1 rounded-full">
+                        COMING 2026
+                      </span>
+                    </div>
+                    <p className="text-purple-200 mb-4">
+                      Automatically blur faces in your YouTube videos, vlogs, and content. Avoid GDPR strikes, protect privacy, and save hours of manual editing. Perfect for content creators who film in public spaces.
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-yellow-400">✓</span>
+                        <span>Videos up to 60 minutes</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-yellow-400">✓</span>
+                        <span>Automatic face tracking</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-yellow-400">✓</span>
+                        <span>4K resolution support</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-yellow-400">✓</span>
+                        <span>Background processing</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
                 <div className="text-3xl mb-3">🚀</div>
                 <h3 className="text-xl font-bold mb-2">Batch Processing</h3>
@@ -293,6 +336,15 @@ export default function PricingPage() {
               </h3>
               <p className="text-slate-600">
                 Free tier: Photos processed in real-time, never stored. Premium/Pro: You can choose to save history for re-downloading, but it's optional and you can delete anytime.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                When will video processing be available?
+              </h3>
+              <p className="text-slate-600">
+                Video face blurring is coming in 2026 as part of Pro Edition. We're testing with select YouTubers and content creators. Want early access? Contact us to join the beta program!
               </p>
             </div>
 

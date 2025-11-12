@@ -217,7 +217,24 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* YouTubers - Featured */}
+            <div className="bg-gradient-to-br from-red-500 to-pink-600 p-8 rounded-xl shadow-lg text-white">
+              <div className="text-5xl mb-4">🎥</div>
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="text-xl font-semibold">YouTubers & Vloggers</h3>
+                <span className="bg-yellow-400 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  SOON
+                </span>
+              </div>
+              <p className="text-red-50 mb-3">
+                Blur faces in videos automatically. Avoid GDPR strikes when filming in public.
+              </p>
+              <p className="text-xs text-red-100">
+                Coming 2026 in Pro Edition
+              </p>
+            </div>
+
             <div className="bg-white p-8 rounded-xl shadow-sm">
               <div className="text-4xl mb-4">📱</div>
               <h3 className="text-xl font-semibold text-slate-900 mb-3">Social Media</h3>
@@ -236,7 +253,7 @@ export default function Home() {
               <div className="text-4xl mb-4">📰</div>
               <h3 className="text-xl font-semibold text-slate-900 mb-3">Content Creators</h3>
               <p className="text-slate-600">
-                YouTube thumbnails, blog posts, newsletters with privacy protection
+                Thumbnails, blog posts, newsletters with privacy protection
               </p>
             </div>
           </div>
@@ -334,6 +351,13 @@ export default function Home() {
                 <li className="flex items-start">
                   <span className="text-purple-400 mr-2">✓</span>
                   <span>Unlimited photos</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-400 mr-2">✓</span>
+                  <div>
+                    <span className="text-white font-semibold">Video processing</span>
+                    <span className="block text-xs text-slate-500">Coming 2026</span>
+                  </div>
                 </li>
                 <li className="flex items-start">
                   <span className="text-purple-400 mr-2">✓</span>
