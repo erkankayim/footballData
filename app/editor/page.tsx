@@ -1,7 +1,15 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+
+const RATE_LIMIT = 6; // photos per hour
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour in milliseconds
+
+interface RateLimitData {
+  count: number;
+  resetTime: number;
+}
 
 export default function EditorPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -9,7 +17,80 @@ export default function EditorPage() {
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [remainingUses, setRemainingUses] = useState<number>(RATE_LIMIT);
+  const [resetTime, setResetTime] = useState<number | null>(null);
+  const [timeUntilReset, setTimeUntilReset] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Check rate limit on mount
+  useEffect(() => {
+    checkRateLimit();
+    const interval = setInterval(updateTimeUntilReset, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const checkRateLimit = () => {
+    const data = getRateLimitData();
+    const now = Date.now();
+
+    if (now >= data.resetTime) {
+      // Reset the limit
+      const newData: RateLimitData = {
+        count: 0,
+        resetTime: now + RATE_LIMIT_WINDOW,
+      };
+      setRateLimitData(newData);
+      setRemainingUses(RATE_LIMIT);
+      setResetTime(newData.resetTime);
+    } else {
+      setRemainingUses(Math.max(0, RATE_LIMIT - data.count));
+      setResetTime(data.resetTime);
+    }
+  };
+
+  const getRateLimitData = (): RateLimitData => {
+    if (typeof window === "undefined") {
+      return { count: 0, resetTime: Date.now() + RATE_LIMIT_WINDOW };
+    }
+    const stored = localStorage.getItem("faceprivacy_rate_limit");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    const newData: RateLimitData = {
+      count: 0,
+      resetTime: Date.now() + RATE_LIMIT_WINDOW,
+    };
+    setRateLimitData(newData);
+    return newData;
+  };
+
+  const setRateLimitData = (data: RateLimitData) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("faceprivacy_rate_limit", JSON.stringify(data));
+    }
+  };
+
+  const incrementRateLimit = () => {
+    const data = getRateLimitData();
+    data.count += 1;
+    setRateLimitData(data);
+    setRemainingUses(Math.max(0, RATE_LIMIT - data.count));
+  };
+
+  const updateTimeUntilReset = () => {
+    if (!resetTime) return;
+    const now = Date.now();
+    const diff = resetTime - now;
+
+    if (diff <= 0) {
+      checkRateLimit();
+      return;
+    }
+
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    setTimeUntilReset(`${minutes}m ${seconds}s`);
+  };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -56,6 +137,12 @@ export default function EditorPage() {
   const processImage = async () => {
     if (!selectedImage) return;
 
+    // Check rate limit
+    if (remainingUses <= 0) {
+      setError(`Rate limit reached! Please wait ${timeUntilReset} or upgrade to Premium for unlimited processing.`);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -78,6 +165,9 @@ export default function EditorPage() {
 
       const data = await apiResponse.json();
       setProcessedImage(data.processedImage);
+
+      // Increment rate limit counter after successful processing
+      incrementRateLimit();
     } catch (error) {
       console.error("Error processing image:", error);
       setError("Failed to process image. Please try again.");
@@ -128,13 +218,39 @@ export default function EditorPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-slate-900 mb-4">
             Face Privacy Editor
           </h1>
-          <p className="text-xl text-slate-600">
+          <p className="text-xl text-slate-600 mb-4">
             Upload a photo and our AI will automatically blur background faces
           </p>
+
+          {/* Rate Limit Badge */}
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 px-6 py-3 rounded-full">
+            <span className="text-2xl">🎯</span>
+            <div className="text-left">
+              <p className="text-sm font-semibold text-slate-900">
+                {remainingUses > 0 ? (
+                  <>
+                    <span className="text-purple-600">{remainingUses}</span> free photos left this hour
+                  </>
+                ) : (
+                  <>Rate limit reached</>
+                )}
+              </p>
+              {remainingUses === 0 && (
+                <p className="text-xs text-slate-600">
+                  Resets in {timeUntilReset}
+                </p>
+              )}
+              {remainingUses > 0 && remainingUses <= 2 && (
+                <Link href="/pricing" className="text-xs text-purple-600 hover:text-purple-700 underline">
+                  Upgrade for unlimited →
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
 
         {!selectedImage ? (
@@ -240,17 +356,11 @@ export default function EditorPage() {
                 </p>
                 <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                   {processedImage ? (
-                    <div className="relative">
-                      <img
-                        src={processedImage}
-                        alt="Processed"
-                        className="w-full h-auto"
-                      />
-                      {/* Watermark overlay visible on preview */}
-                      <div className="absolute bottom-4 right-4 bg-white/90 px-3 py-1 rounded text-xs font-semibold text-slate-700">
-                        FacePrivacy.ai
-                      </div>
-                    </div>
+                    <img
+                      src={processedImage}
+                      alt="Processed"
+                      className="w-full h-auto"
+                    />
                   ) : (
                     <div className="aspect-[4/3] flex items-center justify-center bg-slate-50">
                       {loading ? (
@@ -283,15 +393,25 @@ export default function EditorPage() {
               </div>
             )}
 
+            {/* Google AdSense Placeholder - Shows on free tier */}
+            {!processedImage && remainingUses < 6 && (
+              <div className="mb-8 bg-slate-100 rounded-2xl p-8 text-center border-2 border-dashed border-slate-300">
+                <p className="text-sm text-slate-500 mb-2">Advertisement</p>
+                <div className="bg-white rounded-lg p-12 text-slate-400">
+                  [Google AdSense - 728x90 Leaderboard]
+                </div>
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex gap-4">
               {!processedImage ? (
                 <button
                   onClick={processImage}
-                  disabled={loading}
+                  disabled={loading || remainingUses <= 0}
                   className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl text-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? "Processing..." : "Process Image"}
+                  {loading ? "Processing..." : remainingUses <= 0 ? `Wait ${timeUntilReset}` : "Process Image"}
                 </button>
               ) : (
                 <>
@@ -299,7 +419,7 @@ export default function EditorPage() {
                     onClick={downloadImage}
                     className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl text-lg font-semibold hover:opacity-90 transition-opacity"
                   >
-                    Download Image (with watermark)
+                    Download Image
                   </button>
                   <button
                     onClick={reset}
@@ -311,22 +431,33 @@ export default function EditorPage() {
               )}
             </div>
 
-            {/* Upgrade CTA */}
+            {/* Google AdSense Placeholder - Shows after processing */}
             {processedImage && (
-              <div className="mt-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white text-center">
-                <h3 className="text-2xl font-bold mb-2">
-                  Want images without watermark?
-                </h3>
-                <p className="text-purple-100 mb-4">
-                  Upgrade to Premium for $19/month and get watermark-free images plus batch
-                  processing
-                </p>
-                <button
-                  disabled
-                  className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold cursor-not-allowed opacity-50"
-                >
-                  Coming Soon
-                </button>
+              <div className="mt-8">
+                <div className="bg-slate-100 rounded-2xl p-8 text-center border-2 border-dashed border-slate-300 mb-6">
+                  <p className="text-sm text-slate-500 mb-2">Advertisement</p>
+                  <div className="bg-white rounded-lg p-12 text-slate-400">
+                    [Google AdSense - 728x90 Leaderboard]
+                  </div>
+                </div>
+
+                {/* Upgrade CTA */}
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-white text-center">
+                  <h3 className="text-xl font-bold mb-2">
+                    Want ad-free experience + more photos?
+                  </h3>
+                  <p className="text-purple-100 mb-4 text-sm">
+                    Premium: $3/month for 150 photos/month with no ads, or Pro: $49/month for unlimited + API access
+                  </p>
+                  <div className="flex gap-3 justify-center">
+                    <Link
+                      href="/pricing"
+                      className="bg-white text-purple-600 px-6 py-2.5 rounded-lg font-semibold hover:bg-purple-50 transition-colors text-sm"
+                    >
+                      View Plans
+                    </Link>
+                  </div>
+                </div>
               </div>
             )}
           </div>

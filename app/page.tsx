@@ -255,73 +255,116 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-slate-800 p-8 rounded-xl border border-slate-700">
-              <h3 className="text-2xl font-bold mb-2">Free</h3>
-              <div className="text-4xl font-bold mb-4">$0</div>
-              <p className="text-slate-300 mb-6">Forever free</p>
-              <ul className="space-y-3 mb-8">
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+              <h3 className="text-xl font-bold mb-2">Free</h3>
+              <div className="text-3xl font-bold mb-2">$0</div>
+              <p className="text-slate-400 text-sm mb-6">Forever free</p>
+              <ul className="space-y-2 mb-6 text-sm">
                 <li className="flex items-start">
                   <span className="text-green-400 mr-2">✓</span>
-                  Unlimited photos
+                  <span>6 photos per hour</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-green-400 mr-2">✓</span>
-                  AI face detection
+                  <span>AI face detection</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-green-400 mr-2">✓</span>
-                  Automatic blurring
+                  <span>No watermark</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-yellow-400 mr-2">•</span>
-                  Small watermark
+                  <span>Ad-supported</span>
                 </li>
               </ul>
               <Link
                 href="/editor"
-                className="block w-full bg-slate-700 text-white py-3 rounded-lg text-center font-semibold hover:bg-slate-600 transition-colors"
+                className="block w-full bg-slate-700 text-white py-2.5 rounded-lg text-center text-sm font-semibold hover:bg-slate-600 transition-colors"
               >
                 Start Free
               </Link>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-600 to-pink-600 p-8 rounded-xl relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-slate-900 px-4 py-1 rounded-full text-sm font-bold">
-                COMING SOON
+            <div className="bg-gradient-to-br from-purple-600 to-pink-600 p-6 rounded-xl relative transform scale-105">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-slate-900 px-3 py-0.5 rounded-full text-xs font-bold">
+                POPULAR
               </div>
-              <h3 className="text-2xl font-bold mb-2">Premium</h3>
-              <div className="text-4xl font-bold mb-4">$19</div>
-              <p className="text-purple-100 mb-6">per month</p>
-              <ul className="space-y-3 mb-8">
+              <h3 className="text-xl font-bold mb-2">Premium</h3>
+              <div className="text-3xl font-bold mb-2">$3</div>
+              <p className="text-purple-100 text-sm mb-6">per month</p>
+              <ul className="space-y-2 mb-6 text-sm">
                 <li className="flex items-start">
                   <span className="text-white mr-2">✓</span>
-                  Everything in Free
+                  <span>150 photos/month</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-white mr-2">✓</span>
-                  No watermark
+                  <span>No hourly limits</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-white mr-2">✓</span>
-                  Batch processing
+                  <span>No ads</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-white mr-2">✓</span>
-                  API access
+                  <span>Priority processing</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-white mr-2">✓</span>
-                  Priority support
+                  <span>History & re-download</span>
                 </li>
               </ul>
               <button
                 disabled
-                className="block w-full bg-white/20 text-white py-3 rounded-lg text-center font-semibold cursor-not-allowed"
+                className="block w-full bg-white text-purple-600 py-2.5 rounded-lg text-center text-sm font-semibold hover:bg-purple-50 transition-colors disabled:opacity-50"
               >
                 Coming Soon
               </button>
             </div>
+
+            <div className="bg-slate-800 p-6 rounded-xl border-2 border-purple-500">
+              <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 px-2 py-0.5 rounded text-xs font-bold mb-1">
+                PRO
+              </div>
+              <h3 className="text-xl font-bold mb-2">Pro Edition</h3>
+              <div className="text-3xl font-bold mb-2">$49</div>
+              <p className="text-slate-400 text-sm mb-6">per month</p>
+              <ul className="space-y-2 mb-6 text-sm">
+                <li className="flex items-start">
+                  <span className="text-purple-400 mr-2">✓</span>
+                  <span>Unlimited photos</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-400 mr-2">✓</span>
+                  <span>Batch processing</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-400 mr-2">✓</span>
+                  <span>API access</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-400 mr-2">✓</span>
+                  <span>Advanced features</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-400 mr-2">✓</span>
+                  <span>White-label</span>
+                </li>
+              </ul>
+              <Link
+                href="/pricing"
+                className="block w-full bg-slate-700 text-white py-2.5 rounded-lg text-center text-sm font-semibold hover:bg-slate-600 transition-colors"
+              >
+                Learn More
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="/pricing" className="text-purple-400 hover:text-purple-300 underline">
+              View detailed pricing comparison →
+            </Link>
           </div>
         </div>
       </section>

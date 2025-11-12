@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     const width = jimpImage.getWidth();
     const height = jimpImage.getHeight();
 
-    // For MVP: Blur all detected faces
+    // Blur all detected faces
     // In a real implementation, you'd use smarter logic to determine
     // which faces are "background" vs "main subject"
     for (const face of faces) {
@@ -63,20 +63,7 @@ export async function POST(request: NextRequest) {
       jimpImage.composite(faceRegion, x, y);
     }
 
-    // Add watermark
-    const font = await Jimp.loadFont(Jimp.FONT_SANS_32_WHITE);
-    jimpImage.print(
-      font,
-      width - 250,
-      height - 50,
-      {
-        text: "FacePrivacy.ai",
-        alignmentX: Jimp.HORIZONTAL_ALIGN_RIGHT,
-        alignmentY: Jimp.VERTICAL_ALIGN_BOTTOM,
-      },
-      230,
-      40
-    );
+    // No watermark - free tier is ad-supported!
 
     // Convert to base64
     const processedBuffer = await jimpImage.getBufferAsync(Jimp.MIME_JPEG);
