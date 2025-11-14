@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, Edit, Trash2, TrendingUp, TrendingDown, Calculator } from "lucide-react"
+import { Plus, Edit, Trash2, TrendingUp, TrendingDown, Calculator, Lightbulb } from "lucide-react"
 import Link from "next/link"
 
 interface MenuItem {
@@ -36,6 +36,7 @@ export default function MenuPage() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     categoryId: "",
     name: "",
@@ -147,6 +148,30 @@ export default function MenuPage() {
     })
     setEditingId(null)
     setShowForm(false)
+  }
+
+  const requestAISuggestion = async (menuItemId: string) => {
+    setAiLoading(menuItemId)
+    try {
+      const res = await fetch('/api/ai/pricing-suggestion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ menuItemId }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        alert(`AI Önerisi:\n\nÖnerilen Fiyat: ${data.suggestion.suggestedPrice}₺\n\nAçıklama: ${data.suggestion.reasoning}\n\nGüven Skoru: %${(data.suggestion.confidence * 100).toFixed(0)}\n\nÖneri AI Önerileri sayfasına eklendi.`)
+      } else {
+        alert(data.error || 'Bir hata oluştu')
+      }
+    } catch (error) {
+      console.error('AI suggestion error:', error)
+      alert('AI önerisi alınırken hata oluştu')
+    } finally {
+      setAiLoading(null)
+    }
   }
 
   if (loading) {
@@ -329,6 +354,17 @@ export default function MenuPage() {
                         <Calculator className="w-4 h-4 text-green-600" />
                       </Button>
                     </Link>
+                    {item.cost && item.cost > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="AI Fiyat Önerisi"
+                        onClick={() => requestAISuggestion(item.id)}
+                        disabled={aiLoading === item.id}
+                      >
+                        <Lightbulb className={`w-4 h-4 ${aiLoading === item.id ? 'animate-pulse' : 'text-yellow-600'}`} />
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"

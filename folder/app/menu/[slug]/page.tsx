@@ -54,6 +54,28 @@ export default function MenuPage() {
     fetchMenu()
   }, [slug, lang])
 
+  useEffect(() => {
+    // Track menü görüntüleme
+    if (menu) {
+      trackView()
+    }
+  }, [menu])
+
+  const trackView = async () => {
+    try {
+      await fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurantSlug: slug,
+          qrCodeId: qr || null,
+        }),
+      })
+    } catch (error) {
+      console.error('Tracking error:', error)
+    }
+  }
+
   const fetchMenu = async () => {
     try {
       const url = `/api/menu/${slug}?lang=${lang}${qr ? `&qr=${qr}` : ''}`
