@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, Edit, Trash2, TrendingUp, TrendingDown } from "lucide-react"
+import { Plus, Edit, Trash2, TrendingUp, TrendingDown, Calculator } from "lucide-react"
+import Link from "next/link"
 
 interface MenuItem {
   id: string
@@ -319,6 +320,15 @@ export default function MenuPage() {
                     )}
                   </div>
                   <div className="flex gap-1">
+                    <Link href={`/dashboard/menu/${item.id}/recipe`}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Reçete ve Maliyet"
+                      >
+                        <Calculator className="w-4 h-4 text-green-600" />
+                      </Button>
+                    </Link>
                     <Button
                       variant="ghost"
                       size="icon"
