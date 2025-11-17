@@ -10,12 +10,9 @@ interface MenuItem {
   name: string
   description: string
   price: number
-  images: string[]
+  imageUrl: string[]
   allergens: string[]
-  calories: number | null
-  isPopular: boolean
-  isNew: boolean
-  isSpicy: boolean
+  calories: number | null boolean boolean boolean
   isVegetarian: boolean
   isVegan: boolean
   variants: { id: string; name: string; price: number }[]
@@ -195,10 +192,10 @@ export default function MenuPage() {
                   <CardContent className="p-0">
                     <div className="flex gap-4">
                       {/* Item Image */}
-                      {item.images && item.images.length > 0 && (
+                      {item.imageUrl && item.imageUrl.length > 0 && (
                         <div className="w-28 h-28 flex-shrink-0">
                           <img
-                            src={item.images[0]}
+                            src={item.imageUrl[0]}
                             alt={item.name}
                             className="w-full h-full object-cover"
                           />

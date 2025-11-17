@@ -16,9 +16,8 @@ interface MenuItem {
   price: number
   cost?: number
   profitMargin?: number
-  images: string[]
-  isAvailable: boolean
-  isPopular: boolean
+  imageUrl: string[]
+  isAvailable: boolean boolean
   category: {
     id: string
     name: string
@@ -43,8 +42,7 @@ export default function MenuPage() {
     nameEn: "",
     description: "",
     price: 0,
-    cost: 0,
-    isPopular: false,
+    cost: 0 false,
     isVegetarian: false,
     isVegan: false,
   })
@@ -110,8 +108,7 @@ export default function MenuPage() {
       nameEn: item.nameEn || "",
       description: item.description || "",
       price: item.price,
-      cost: item.cost || 0,
-      isPopular: item.isPopular,
+      cost: item.cost || 0 item.isPopular,
       isVegetarian: false,
       isVegan: false,
     })
@@ -141,8 +138,7 @@ export default function MenuPage() {
       nameEn: "",
       description: "",
       price: 0,
-      cost: 0,
-      isPopular: false,
+      cost: 0 false,
       isVegetarian: false,
       isVegan: false,
     })
@@ -269,7 +265,7 @@ export default function MenuPage() {
                   <input
                     type="checkbox"
                     checked={formData.isPopular}
-                    onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
+                    onChange={(e) => setFormData({ ...formData e.target.checked })}
                   />
                   <span className="text-sm">Popüler</span>
                 </label>
