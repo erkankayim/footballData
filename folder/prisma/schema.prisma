@@ -67,6 +67,7 @@ model Location {
   updatedAt    DateTime    @updatedAt
 
   qrCodes      QRCode[]
+  orders       Order[]
 
   @@map("locations")
 }
@@ -120,8 +121,10 @@ model MenuItem {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
+  variants         ItemVariant[]
   recipes          Recipe[]
   priceHistory     PriceHistory[]
+  competitorPrices CompetitorPrice[]
   menuViews        MenuView[]
 
   @@map("menu_items")
