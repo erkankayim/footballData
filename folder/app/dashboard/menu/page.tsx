@@ -108,7 +108,7 @@ export default function MenuPage() {
       nameEn: item.nameEn || "",
       description: item.description || "",
       price: item.price,
-      cost: item.cost || 0 item.isPopular,
+      cost: item.cost || 0,
       isVegetarian: false,
       isVegan: false,
     })
