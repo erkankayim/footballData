@@ -92,12 +92,11 @@ export async function POST(req: NextRequest) {
         ...data,
         profitMargin,
         restaurantId: session.user.restaurantId,
-        imageUrl: data.imageUrl || [],
-        allergens: data.allergens || [],
+        imageUrl: data.imageUrl || null,
+        allergens: data.allergens || null,
       },
       include: {
         category: true,
-        variants: true,
       }
     })
 
