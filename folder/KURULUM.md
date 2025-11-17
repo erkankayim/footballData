@@ -32,7 +32,7 @@ Eğer Prisma ile sorun yaşarsanız, `init.sql` dosyasını kullanarak manuel ol
 
 ```bash
 # psql ile bağlan
-PGPASSWORD='MeloveUzgunErkan!53' psql -h db.aqjvamyyuctficykcyga.supabase.co -U postgres -d postgres -p 5432
+PGPASSWORD='Erkan!123**' psql -h db.aqjvamyyuctficykcyga.supabase.co -U postgres -d postgres -p 5432
 
 # SQL dosyasını çalıştır
 \i init.sql
