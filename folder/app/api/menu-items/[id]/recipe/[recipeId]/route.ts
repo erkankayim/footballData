@@ -109,7 +109,7 @@ async function recalculateItemCost(menuItemId: string) {
   let totalCost = 0
 
   for (const recipe of recipes) {
-    const ingredientPrice = recipe.ingredient.currentPrice
+    const ingredientPrice = recipe.ingredient.pricePerUnit
     const quantity = recipe.quantity
 
     // Birim dönüşümü

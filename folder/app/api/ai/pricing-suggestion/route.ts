@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     // AI önerisi al
     const suggestion = await generatePricingSuggestion({
       itemName: menuItem.name,
-      currentPrice: menuItem.price,
+      pricePerUnit: menuItem.price,
       cost: menuItem.cost,
       competitorPrices: competitorPrices.map(c => c.price),
       viewCount: menuItem.viewCount,
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         status: 'PENDING',
         metadata: {
           menuItemId,
-          currentPrice: menuItem.price,
+          pricePerUnit: menuItem.price,
           suggestedPrice: suggestion.suggestedPrice,
         }
       }

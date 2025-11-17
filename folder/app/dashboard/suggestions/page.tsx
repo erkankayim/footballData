@@ -154,10 +154,10 @@ export default function SuggestionsPage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="flex gap-6 text-sm">
-                  {suggestion.metadata?.currentPrice && (
+                  {suggestion.metadata?.pricePerUnit && (
                     <div>
                       <span className="text-gray-600">Mevcut Fiyat:</span>{' '}
-                      <span className="font-semibold">{suggestion.metadata.currentPrice}₺</span>
+                      <span className="font-semibold">{suggestion.metadata.pricePerUnit}₺</span>
                     </div>
                   )}
                   {suggestion.metadata?.suggestedPrice && (

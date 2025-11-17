@@ -11,8 +11,8 @@ interface Ingredient {
   id: string
   name: string
   unit: string
-  currentPrice: number
-  stockQuantity: number
+  pricePerUnit: number
+  currentStock: number
   minStockLevel: number | null
   supplier: string | null
   _count: {
@@ -36,8 +36,8 @@ export default function IngredientsPage() {
   const [formData, setFormData] = useState({
     name: "",
     unit: "G",
-    currentPrice: 0,
-    stockQuantity: 0,
+    pricePerUnit: 0,
+    currentStock: 0,
     minStockLevel: 0,
     supplier: "",
   })
@@ -87,8 +87,8 @@ export default function IngredientsPage() {
     setFormData({
       name: ingredient.name,
       unit: ingredient.unit,
-      currentPrice: ingredient.currentPrice,
-      stockQuantity: ingredient.stockQuantity,
+      pricePerUnit: ingredient.pricePerUnit,
+      currentStock: ingredient.currentStock,
       minStockLevel: ingredient.minStockLevel || 0,
       supplier: ingredient.supplier || "",
     })
@@ -118,8 +118,8 @@ export default function IngredientsPage() {
     setFormData({
       name: "",
       unit: "G",
-      currentPrice: 0,
-      stockQuantity: 0,
+      pricePerUnit: 0,
+      currentStock: 0,
       minStockLevel: 0,
       supplier: "",
     })
@@ -129,7 +129,7 @@ export default function IngredientsPage() {
 
   const getLowStockIngredients = () => {
     return ingredients.filter(ing =>
-      ing.minStockLevel && ing.stockQuantity < ing.minStockLevel
+      ing.minStockLevel && ing.currentStock < ing.minStockLevel
     )
   }
 
@@ -166,7 +166,7 @@ export default function IngredientsPage() {
                 <div className="flex flex-wrap gap-2 mt-2">
                   {lowStockItems.map(item => (
                     <span key={item.id} className="text-xs bg-orange-200 text-orange-900 px-2 py-1 rounded">
-                      {item.name}: {item.stockQuantity}{item.unit}
+                      {item.name}: {item.currentStock}{item.unit}
                     </span>
                   ))}
                 </div>
@@ -214,24 +214,24 @@ export default function IngredientsPage() {
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="currentPrice">Birim Fiyat (₺) *</Label>
+                  <Label htmlFor="pricePerUnit">Birim Fiyat (₺) *</Label>
                   <Input
-                    id="currentPrice"
+                    id="pricePerUnit"
                     type="number"
                     step="0.01"
-                    value={formData.currentPrice}
-                    onChange={(e) => setFormData({ ...formData, currentPrice: parseFloat(e.target.value) })}
+                    value={formData.pricePerUnit}
+                    onChange={(e) => setFormData({ ...formData, pricePerUnit: parseFloat(e.target.value) })}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="stockQuantity">Mevcut Stok</Label>
+                  <Label htmlFor="currentStock">Mevcut Stok</Label>
                   <Input
-                    id="stockQuantity"
+                    id="currentStock"
                     type="number"
                     step="0.01"
-                    value={formData.stockQuantity}
-                    onChange={(e) => setFormData({ ...formData, stockQuantity: parseFloat(e.target.value) })}
+                    value={formData.currentStock}
+                    onChange={(e) => setFormData({ ...formData, currentStock: parseFloat(e.target.value) })}
                   />
                 </div>
                 <div className="space-y-2">
@@ -270,7 +270,7 @@ export default function IngredientsPage() {
       {/* Ingredients List */}
       <div className="grid gap-3">
         {ingredients.map((ingredient) => {
-          const isLowStock = ingredient.minStockLevel && ingredient.stockQuantity < ingredient.minStockLevel
+          const isLowStock = ingredient.minStockLevel && ingredient.currentStock < ingredient.minStockLevel
 
           return (
             <Card key={ingredient.id} className={isLowStock ? 'border-orange-300' : ''}>
@@ -292,8 +292,8 @@ export default function IngredientsPage() {
                       )}
                     </div>
                     <div className="flex gap-4 mt-2 text-sm text-gray-600">
-                      <span>Fiyat: <strong>{ingredient.currentPrice}₺/{ingredient.unit}</strong></span>
-                      <span>Stok: <strong>{ingredient.stockQuantity} {ingredient.unit}</strong></span>
+                      <span>Fiyat: <strong>{ingredient.pricePerUnit}₺/{ingredient.unit}</strong></span>
+                      <span>Stok: <strong>{ingredient.currentStock} {ingredient.unit}</strong></span>
                       {ingredient.minStockLevel && (
                         <span>Min: <strong>{ingredient.minStockLevel} {ingredient.unit}</strong></span>
                       )}

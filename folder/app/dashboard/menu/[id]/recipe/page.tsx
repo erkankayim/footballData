@@ -14,7 +14,7 @@ interface RecipeItem {
     id: string
     name: string
     unit: string
-    currentPrice: number
+    pricePerUnit: number
   }
   quantity: number
   unit: string
@@ -33,7 +33,7 @@ interface Ingredient {
   id: string
   name: string
   unit: string
-  currentPrice: number
+  pricePerUnit: number
 }
 
 const UNITS = [
@@ -226,7 +226,7 @@ export default function RecipePage() {
                     <option value="">Malzeme Seçin</option>
                     {ingredients.map((ing) => (
                       <option key={ing.id} value={ing.id}>
-                        {ing.name} ({ing.currentPrice}₺/{ing.unit})
+                        {ing.name} ({ing.pricePerUnit}₺/{ing.unit})
                       </option>
                     ))}
                   </select>
@@ -299,7 +299,7 @@ export default function RecipePage() {
                   <div className="flex-1">
                     <h4 className="font-medium text-gray-900">{recipe.ingredient.name}</h4>
                     <p className="text-sm text-gray-600">
-                      {recipe.quantity} {recipe.unit} × {recipe.ingredient.currentPrice}₺/{recipe.ingredient.unit}
+                      {recipe.quantity} {recipe.unit} × {recipe.ingredient.pricePerUnit}₺/{recipe.ingredient.unit}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
