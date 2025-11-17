@@ -10,9 +10,9 @@ interface MenuItem {
   name: string
   description: string
   price: number
-  imageUrl: string[]
-  allergens: string[]
-  calories: number | null boolean boolean boolean
+  imageUrl: string | null
+  allergens: string | null
+  calories: number | null
   isVegetarian: boolean
   isVegan: boolean
   variants: { id: string; name: string; price: number }[]
@@ -192,10 +192,10 @@ export default function MenuPage() {
                   <CardContent className="p-0">
                     <div className="flex gap-4">
                       {/* Item Image */}
-                      {item.imageUrl && item.imageUrl.length > 0 && (
+                      {item.imageUrl && (
                         <div className="w-28 h-28 flex-shrink-0">
                           <img
-                            src={item.imageUrl[0]}
+                            src={item.imageUrl}
                             alt={item.name}
                             className="w-full h-full object-cover"
                           />
@@ -206,21 +206,9 @@ export default function MenuPage() {
                       <div className="flex-1 p-4">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold text-gray-900">
-                                {item.name}
-                              </h3>
-                              {item.isPopular && (
-                                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">
-                                  Popüler
-                                </span>
-                              )}
-                              {item.isNew && (
-                                <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
-                                  Yeni
-                                </span>
-                              )}
-                            </div>
+                            <h3 className="font-semibold text-gray-900 mb-1">
+                              {item.name}
+                            </h3>
                             {item.description && (
                               <p className="text-sm text-gray-600 mb-2 line-clamp-2">
                                 {item.description}
@@ -229,7 +217,6 @@ export default function MenuPage() {
                             <div className="flex items-center gap-2 text-xs text-gray-500">
                               {item.isVegan && <span>🌱 Vegan</span>}
                               {item.isVegetarian && <span>🥬 Vejetaryen</span>}
-                              {item.isSpicy && <span>🌶️ Acılı</span>}
                               {item.calories && <span>{item.calories} kcal</span>}
                             </div>
                           </div>
@@ -258,10 +245,10 @@ export default function MenuPage() {
                         )}
 
                         {/* Allergens */}
-                        {item.allergens && item.allergens.length > 0 && (
+                        {item.allergens && (
                           <div className="mt-2 text-xs text-gray-500">
                             <span className="font-medium">Alerjenler:</span>{' '}
-                            {item.allergens.join(', ')}
+                            {item.allergens}
                           </div>
                         )}
                       </div>
