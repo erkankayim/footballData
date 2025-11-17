@@ -7,8 +7,8 @@ import { z } from 'zod'
 const ingredientSchema = z.object({
   name: z.string().min(1),
   unit: z.enum(['KG', 'G', 'L', 'ML', 'ADET']),
-  currentPrice: z.number().min(0),
-  stockQuantity: z.number().min(0).optional(),
+  pricePerUnit: z.number().min(0),
+  currentStock: z.number().min(0).optional(),
   minStockLevel: z.number().min(0).optional(),
   supplier: z.string().optional(),
 })
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
       })
 
       const lowStockItems = ingredients.filter(
-        ing => ing.minStockLevel && ing.stockQuantity < ing.minStockLevel
+        ing => ing.minStockLevel && ing.currentStock < ing.minStockLevel
       )
 
       return NextResponse.json({ ingredients: lowStockItems })

@@ -41,7 +41,7 @@ export async function GET(
     let totalCost = 0
     const recipeDetails = recipes.map(recipe => {
       let cost = 0
-      const ingredientPrice = recipe.ingredient.currentPrice
+      const ingredientPrice = recipe.ingredient.pricePerUnit
 
       // Birim dönüşümü
       if (recipe.ingredient.unit === 'KG' && recipe.unit === 'G') {
@@ -60,7 +60,7 @@ export async function GET(
           id: recipe.ingredient.id,
           name: recipe.ingredient.name,
           unit: recipe.ingredient.unit,
-          currentPrice: recipe.ingredient.currentPrice,
+          pricePerUnit: recipe.ingredient.pricePerUnit,
         },
         quantity: recipe.quantity,
         unit: recipe.unit,
@@ -172,7 +172,7 @@ async function recalculateItemCost(menuItemId: string) {
   let totalCost = 0
 
   for (const recipe of recipes) {
-    const ingredientPrice = recipe.ingredient.currentPrice
+    const ingredientPrice = recipe.ingredient.pricePerUnit
     const quantity = recipe.quantity
 
     // Birim dönüşümü

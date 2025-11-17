@@ -7,8 +7,8 @@ import { z } from 'zod'
 const ingredientSchema = z.object({
   name: z.string().min(1).optional(),
   unit: z.enum(['KG', 'G', 'L', 'ML', 'ADET']).optional(),
-  currentPrice: z.number().min(0).optional(),
-  stockQuantity: z.number().min(0).optional(),
+  pricePerUnit: z.number().min(0).optional(),
+  currentStock: z.number().min(0).optional(),
   minStockLevel: z.number().min(0).optional(),
   supplier: z.string().optional(),
 })
@@ -41,7 +41,7 @@ export async function PATCH(
     })
 
     // Fiyat değişmişse, bu malzemeyi içeren tüm ürünlerin maliyetini güncelle
-    if (data.currentPrice && data.currentPrice !== existing.currentPrice) {
+    if (data.pricePerUnit && data.pricePerUnit !== existing.pricePerUnit) {
       const recipes = await prisma.recipe.findMany({
         where: { ingredientId: params.id },
         select: { menuItemId: true }
@@ -120,7 +120,7 @@ async function recalculateItemCost(menuItemId: string) {
   let totalCost = 0
 
   for (const recipe of recipes) {
-    const ingredientPrice = recipe.ingredient.currentPrice
+    const ingredientPrice = recipe.ingredient.pricePerUnit
     const quantity = recipe.quantity
 
     // Birim dönüşümü
