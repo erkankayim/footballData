@@ -16,8 +16,8 @@ const menuItemSchema = z.object({
   descriptionRu: z.string().optional(),
   price: z.number().min(0),
   cost: z.number().min(0).optional(),
-  imageUrl: z.array(z.string()).optional(),
-  allergens: z.array(z.string()).optional(),
+  imageUrl: z.string().optional(),
+  allergens: z.string().optional(),
   calories: z.number().optional(),
   preparationTime: z.number().optional(),
   isAvailable: z.boolean().optional(),
@@ -48,7 +48,6 @@ export async function GET(req: NextRequest) {
       where,
       include: {
         category: true,
-        variants: true,
       },
       orderBy: [
         { sortOrder: 'asc' },
