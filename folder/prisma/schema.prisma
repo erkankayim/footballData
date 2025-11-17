@@ -125,6 +125,7 @@ model MenuItem {
   recipes          Recipe[]
   priceHistory     PriceHistory[]
   menuViews        MenuView[]
+  aiSuggestions    AISuggestion[]
 
   @@map("menu_items")
 }
@@ -239,20 +240,21 @@ model MenuView {
 }
 
 model AISuggestion {
-  id                     String           @id @default(uuid())
-  restaurantId           String
-  restaurant             Restaurant       @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  suggestionType         SuggestionType
-  title                  String
-  description            String
-  confidenceScore        Float?
-  estimatedRevenueImpact Float?
-  status                 SuggestionStatus @default(PENDING)
-  metadata               Json?
-  createdAt              DateTime         @default(now())
-  appliedAt              DateTime?
-  appliedBy              String?
-  user                   User?            @relation(fields: [appliedBy], references: [id])
+  id              String           @id @default(uuid())
+  restaurantId    String
+  restaurant      Restaurant       @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  menuItemId      String
+  menuItem        MenuItem         @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  currentPrice    Float
+  suggestedPrice  Float
+  reasoning       String
+  confidence      Float
+  status          SuggestionStatus @default(PENDING)
+  appliedById     String?
+  appliedBy       User?            @relation(fields: [appliedById], references: [id], onDelete: SetNull)
+  appliedAt       DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   @@map("ai_suggestions")
 }
@@ -299,14 +301,6 @@ enum Unit {
   L
   ML
   ADET
-}
-
-enum SuggestionType {
-  PRICE_CHANGE
-  MENU_PLACEMENT
-  CROSS_SELL
-  REMOVE_ITEM
-  ADD_ITEM
 }
 
 enum SuggestionStatus {

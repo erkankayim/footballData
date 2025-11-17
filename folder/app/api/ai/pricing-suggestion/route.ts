@@ -33,40 +33,43 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Rakip fiyatlarını al
+    // Rakip fiyatlarını al (genel - artık menuItem'a bağlı değil)
     const competitorPrices = await prisma.competitorPrice.findMany({
       where: {
-        matchedMenuItemId: menuItemId
+        restaurantId: session.user.restaurantId
       },
       select: {
-        price: true
+        price: true,
+        productName: true
       }
     })
+
+    // Benzer ürün fiyatlarını filtrele (basit keyword matching)
+    const relevantPrices = competitorPrices
+      .filter(cp =>
+        cp.productName.toLowerCase().includes(menuItem.name.toLowerCase().split(' ')[0]) ||
+        menuItem.name.toLowerCase().includes(cp.productName.toLowerCase().split(' ')[0])
+      )
+      .map(c => c.price)
 
     // AI önerisi al
     const suggestion = await generatePricingSuggestion({
       itemName: menuItem.name,
-      pricePerUnit: menuItem.price,
+      currentPrice: menuItem.price,
       cost: menuItem.cost,
-      competitorPrices: competitorPrices.map(c => c.price),
-      viewCount: menuItem.viewCount,
+      competitorPrices: relevantPrices,
     })
 
     // AI önerisini kaydet
     const aiSuggestion = await prisma.aISuggestion.create({
       data: {
         restaurantId: session.user.restaurantId,
-        suggestionType: 'PRICE_CHANGE',
-        title: `${menuItem.name} için fiyat önerisi`,
-        description: suggestion.reasoning,
-        confidenceScore: suggestion.confidence,
-        estimatedRevenueImpact: parseFloat(suggestion.expectedImpact.replace(/[^0-9.-]/g, '')) || 0,
+        menuItemId: menuItemId,
+        currentPrice: menuItem.price,
+        suggestedPrice: suggestion.suggestedPrice,
+        reasoning: suggestion.reasoning,
+        confidence: suggestion.confidence,
         status: 'PENDING',
-        metadata: {
-          menuItemId,
-          pricePerUnit: menuItem.price,
-          suggestedPrice: suggestion.suggestedPrice,
-        }
       }
     })
 

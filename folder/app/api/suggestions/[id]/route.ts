@@ -18,7 +18,10 @@ export async function POST(
     const { action } = body // 'accept' or 'reject'
 
     const suggestion = await prisma.aISuggestion.findUnique({
-      where: { id: params.id }
+      where: { id: params.id },
+      include: {
+        menuItem: true
+      }
     })
 
     if (!suggestion || suggestion.restaurantId !== session.user.restaurantId) {
@@ -26,39 +29,27 @@ export async function POST(
     }
 
     if (action === 'accept') {
-      // Öneriyi uygula
-      const metadata = suggestion.metadata as any
-
-      if (suggestion.suggestionType === 'PRICE_CHANGE' && metadata.menuItemId) {
-        // Fiyatı güncelle
-        const menuItem = await prisma.menuItem.findUnique({
-          where: { id: metadata.menuItemId }
-        })
-
-        if (menuItem) {
-          // Fiyat geçmişine kaydet
-          await prisma.priceHistory.create({
-            data: {
-              menuItemId: metadata.menuItemId,
-              oldPrice: menuItem.price,
-              newPrice: metadata.suggestedPrice,
-              changedBy: session.user.id,
-              reason: 'AI önerisi kabul edildi'
-            }
-          })
-
-          // Fiyatı güncelle
-          await prisma.menuItem.update({
-            where: { id: metadata.menuItemId },
-            data: {
-              price: metadata.suggestedPrice,
-              profitMargin: menuItem.cost
-                ? ((metadata.suggestedPrice - menuItem.cost) / metadata.suggestedPrice) * 100
-                : null
-            }
-          })
+      // Fiyat geçmişine kaydet
+      await prisma.priceHistory.create({
+        data: {
+          menuItemId: suggestion.menuItemId,
+          oldPrice: suggestion.currentPrice,
+          newPrice: suggestion.suggestedPrice,
+          changedBy: session.user.id,
+          reason: 'AI önerisi kabul edildi'
         }
-      }
+      })
+
+      // Fiyatı güncelle
+      await prisma.menuItem.update({
+        where: { id: suggestion.menuItemId },
+        data: {
+          price: suggestion.suggestedPrice,
+          profitMargin: suggestion.menuItem.cost
+            ? ((suggestion.suggestedPrice - suggestion.menuItem.cost) / suggestion.suggestedPrice) * 100
+            : null
+        }
+      })
 
       // Öneriyi "uygulandı" olarak işaretle
       await prisma.aISuggestion.update({
@@ -66,7 +57,7 @@ export async function POST(
         data: {
           status: 'APPLIED',
           appliedAt: new Date(),
-          appliedBy: session.user.id,
+          appliedById: session.user.id,
         }
       })
 

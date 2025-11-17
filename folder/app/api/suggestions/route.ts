@@ -18,6 +18,16 @@ export async function GET(req: NextRequest) {
         restaurantId: session.user.restaurantId,
         status: status as any,
       },
+      include: {
+        menuItem: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            cost: true
+          }
+        }
+      },
       orderBy: {
         createdAt: 'desc'
       },

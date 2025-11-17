@@ -6,30 +6,28 @@ export const openai = new OpenAI({
 
 export async function generatePricingSuggestion(params: {
   itemName: string
-  pricePerUnit: number
+  currentPrice: number
   cost: number
   competitorPrices: number[]
   salesTrend?: 'up' | 'down' | 'stable'
-  viewCount?: number
 }) {
-  const { itemName, pricePerUnit, cost, competitorPrices, salesTrend, viewCount } = params
+  const { itemName, currentPrice, cost, competitorPrices, salesTrend } = params
 
   const competitorAvg = competitorPrices.length > 0
     ? competitorPrices.reduce((sum, p) => sum + p, 0) / competitorPrices.length
     : null
 
-  const currentMargin = ((pricePerUnit - cost) / pricePerUnit) * 100
+  const currentMargin = ((currentPrice - cost) / currentPrice) * 100
 
   const prompt = `Sen bir restoran danışmanısın. Aşağıdaki ürün için fiyat önerisi yap:
 
 Ürün: ${itemName}
-Mevcut Fiyat: ${pricePerUnit}₺
+Mevcut Fiyat: ${currentPrice}₺
 Maliyet: ${cost}₺
 Mevcut Kar Marjı: %${currentMargin.toFixed(1)}
 ${competitorAvg ? `Rakip Ortalaması: ${competitorAvg.toFixed(2)}₺` : 'Rakip verisi yok'}
 ${competitorPrices.length > 0 ? `Rakip Fiyatları: ${competitorPrices.join('₺, ')}₺` : ''}
 ${salesTrend ? `Satış Trendi: ${salesTrend === 'up' ? 'Yükseliş' : salesTrend === 'down' ? 'Düşüş' : 'Stabil'}` : ''}
-${viewCount ? `Menü Görüntüleme: ${viewCount}` : ''}
 
 Şu formatta JSON yanıtı ver:
 {
