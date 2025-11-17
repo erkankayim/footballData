@@ -264,14 +264,6 @@ export default function MenuPage() {
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
-                    checked={formData.isPopular}
-                    onChange={(e) => setFormData({ ...formData e.target.checked })}
-                  />
-                  <span className="text-sm">Popüler</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
                     checked={formData.isVegetarian}
                     onChange={(e) => setFormData({ ...formData, isVegetarian: e.target.checked })}
                   />
