@@ -42,7 +42,7 @@ export default function MenuPage() {
     nameEn: "",
     description: "",
     price: 0,
-    cost: 0 false,
+    cost: 0,
     isVegetarian: false,
     isVegan: false,
   })
