@@ -1,10 +1,11 @@
 import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { UtensilsCrossed, FolderTree, QrCode, TrendingUp } from "lucide-react"
 
 export default async function DashboardPage() {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
 
   if (!session?.user?.restaurantId) {
     return <div>Unauthorized</div>
