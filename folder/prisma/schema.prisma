@@ -124,7 +124,6 @@ model MenuItem {
   variants         ItemVariant[]
   recipes          Recipe[]
   priceHistory     PriceHistory[]
-  competitorPrices CompetitorPrice[]
   menuViews        MenuView[]
 
   @@map("menu_items")
@@ -180,13 +179,13 @@ model CompetitorPrice {
   restaurantId        String
   restaurant          Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   competitorName      String
-  competitorUrl       String?
+  competitorLocation  String?
   productName         String
   price               Float
-  matchedMenuItemId   String?
-  matchedMenuItem     MenuItem?  @relation(fields: [matchedMenuItemId], references: [id])
-  platform            Platform   @default(MANUAL)
-  scrapedAt           DateTime   @default(now())
+  notes               String?
+  recordedAt          DateTime  @default(now())
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   @@map("competitor_prices")
 }
@@ -300,13 +299,6 @@ enum Unit {
   L
   ML
   ADET
-}
-
-enum Platform {
-  YEMEKSEPETI
-  GETIR
-  WEBSITE
-  MANUAL
 }
 
 enum SuggestionType {

@@ -6,10 +6,10 @@ import { z } from 'zod'
 
 const updateSchema = z.object({
   competitorName: z.string().min(1).optional(),
-  competitorUrl: z.string().url().optional(),
+  competitorLocation: z.string().optional(),
   productName: z.string().min(1).optional(),
   price: z.number().min(0).optional(),
-  matchedMenuItemId: z.string().optional(),
+  notes: z.string().optional(),
 })
 
 export async function PATCH(
@@ -36,16 +36,7 @@ export async function PATCH(
 
     const competitor = await prisma.competitorPrice.update({
       where: { id: params.id },
-      data,
-      include: {
-        matchedMenuItem: {
-          select: {
-            id: true,
-            name: true,
-            price: true,
-          }
-        }
-      }
+      data
     })
 
     return NextResponse.json({ competitor })
