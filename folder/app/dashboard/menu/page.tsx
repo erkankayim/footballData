@@ -16,8 +16,8 @@ interface MenuItem {
   price: number
   cost?: number
   profitMargin?: number
-  imageUrl: string[]
-  isAvailable: boolean boolean
+  imageUrl?: string
+  isAvailable: boolean
   category: {
     id: string
     name: string
