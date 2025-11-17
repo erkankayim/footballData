@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
       await prisma.qRCode.updateMany({
         where: { id: qrCodeId },
         data: {
-          scanCount: {
+          totalViews: {
             increment: 1
           }
         }

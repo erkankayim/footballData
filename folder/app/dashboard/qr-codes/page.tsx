@@ -11,9 +11,9 @@ import Image from "next/image"
 interface QRCode {
   id: string
   tableNumber: string | null
-  qrCodeUrl: string
-  shortUrl: string
-  scanCount: number
+  code: string
+  code: string
+  totalViews: number
   location: {
     id: string
     name: string
@@ -83,9 +83,9 @@ export default function QRCodesPage() {
     }
   }
 
-  const handleDownload = (qrCodeUrl: string, tableNumber: string | null) => {
+  const handleDownload = (code: string, tableNumber: string | null) => {
     const link = document.createElement('a')
-    link.href = qrCodeUrl
+    link.href = code
     link.download = `qr-${tableNumber || 'menu'}.png`
     document.body.appendChild(link)
     link.click()
@@ -100,9 +100,9 @@ export default function QRCodesPage() {
     setShowForm(false)
   }
 
-  const getMenuUrl = (shortUrl: string) => {
+  const getMenuUrl = (code: string) => {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-    return `${baseUrl}/menu/your-restaurant?qr=${shortUrl}`
+    return `${baseUrl}/menu/your-restaurant?qr=${code}`
   }
 
   if (loading) {
@@ -142,7 +142,7 @@ export default function QRCodesPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {qrCodes.reduce((sum, qr) => sum + qr.scanCount, 0)}
+              {qrCodes.reduce((sum, qr) => sum + qr.totalViews, 0)}
             </div>
           </CardContent>
         </Card>
@@ -203,7 +203,7 @@ export default function QRCodesPage() {
                 {/* QR Code Image */}
                 <div className="relative w-full aspect-square bg-white p-4 rounded-lg border-2 border-gray-200">
                   <img
-                    src={qr.qrCodeUrl}
+                    src={qr.code}
                     alt={`QR - ${qr.tableNumber || 'Menü'}`}
                     className="w-full h-full object-contain"
                   />
@@ -213,7 +213,7 @@ export default function QRCodesPage() {
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-1 text-gray-600">
                     <Eye className="w-4 h-4" />
-                    <span>{qr.scanCount} tarama</span>
+                    <span>{qr.totalViews} tarama</span>
                   </div>
                   <span className="text-gray-500">
                     {new Date(qr.createdAt).toLocaleDateString('tr-TR')}
@@ -222,7 +222,7 @@ export default function QRCodesPage() {
 
                 {/* URL */}
                 <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded break-all">
-                  {getMenuUrl(qr.shortUrl)}
+                  {getMenuUrl(qr.code)}
                 </div>
 
                 {/* Actions */}
@@ -231,7 +231,7 @@ export default function QRCodesPage() {
                     variant="outline"
                     size="sm"
                     className="flex-1"
-                    onClick={() => handleDownload(qr.qrCodeUrl, qr.tableNumber)}
+                    onClick={() => handleDownload(qr.code, qr.tableNumber)}
                   >
                     <Download className="w-4 h-4 mr-1" />
                     İndir

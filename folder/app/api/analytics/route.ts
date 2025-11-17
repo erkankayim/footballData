@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
         restaurantId: session.user.restaurantId
       },
       _sum: {
-        scanCount: true
+        totalViews: true
       }
     })
 
@@ -147,7 +147,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       overview: {
         totalViews,
-        qrScans: qrScans._sum.scanCount || 0,
+        qrScans: qrScans._sum.totalViews || 0,
         topViewedCount: topViewedItems.length,
         lowProfitCount: lowProfitItems.length,
       },

@@ -73,8 +73,8 @@ export async function POST(req: NextRequest) {
         restaurantId: session.user.restaurantId,
         locationId: locationId || null,
         tableNumber: tableNumber || null,
-        qrCodeUrl: qrCodeDataUrl,
-        shortUrl: shortCode,
+        code: qrCodeDataUrl,
+        code: shortCode,
       },
       include: {
         location: true

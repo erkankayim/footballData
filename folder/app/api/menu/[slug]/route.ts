@@ -42,11 +42,11 @@ export async function GET(
     if (qrCode) {
       await prisma.qRCode.updateMany({
         where: {
-          shortUrl: qrCode,
+          code: qrCode,
           restaurantId: restaurant.id
         },
         data: {
-          scanCount: {
+          totalViews: {
             increment: 1
           }
         }

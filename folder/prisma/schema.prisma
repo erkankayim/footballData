@@ -214,11 +214,13 @@ model QRCode {
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   locationId   String?
   location     Location?  @relation(fields: [locationId], references: [id])
+  code         String     @unique
   tableNumber  String?
-  qrCodeUrl    String
-  shortUrl     String     @unique
-  scanCount    Int        @default(0)
+  isActive     Boolean    @default(true)
+  totalViews   Int        @default(0)
+  lastViewedAt DateTime?
   createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
   menuViews    MenuView[]
 
