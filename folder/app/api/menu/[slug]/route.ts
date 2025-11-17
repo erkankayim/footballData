@@ -81,7 +81,7 @@ export async function GET(
           price: item.price,
           imageUrl: item.imageUrl,
           allergens: item.allergens,
-          calories: item.calories item.isPopular item.isNew item.isSpicy,
+          calories: item.calories,
           isVegetarian: item.isVegetarian,
           isVegan: item.isVegan,
           variants: item.variants.map(v => ({
